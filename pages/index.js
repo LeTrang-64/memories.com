@@ -1,65 +1,77 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
+import db from '../config/firebaseConfig'
+import Link from 'next/link'
+import AppBar from './components/AppBar';
+import Posts from './components/Posts';
+import { getStaticProps } from './api/document';
+import { useEffect, useState } from 'react';
+import { Row, Col } from 'antd';
+
 
 export default function Home() {
+
+
+  const [data, setData] = useState([]);
+  useEffect(() => {
+
+    const sub = db.collection("Todos").onSnapshot(snap => {
+      let arr = []
+      console.log(snap);
+      snap.forEach((doc) => {
+        const newData = {
+          id: doc.id,
+          ...doc.data()
+        }
+        arr.push(newData)
+      });
+      setData(arr)
+
+      console.log('get data done')
+    })
+
+    return () => {
+      if (sub) sub()
+    }
+  }, [])
+
+
+  console.log(data);
+
+  if (!data) return 'loadding'
   return (
     <div className={styles.container}>
       <Head>
-        <title>Create Next App</title>
+        <title>Memories</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <AppBar />
+      <div className={styles.main}>
+        <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} justify="space-between">
+          <Col className="gutter-row" span={4} >
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+          </Col>
+          <Col className="gutter-row" span={16} >
+            <Link href="/AddEdit">
+              <a>Add content</a>
+            </Link>
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
+            <Posts posts={data} className={styles.posts} />
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
+          </Col>
 
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
+          <Col className="gutter-row" span={4} ></Col>
 
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
 
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
+        </Row>
+        {/* <Link href="/AddEdit">
+          <a>Add content</a>
+        </Link>
 
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
+        <Posts posts={data} className={styles.posts} /> */}
+      </div>
+
+
     </div>
   )
 }

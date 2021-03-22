@@ -1,0 +1,18 @@
+.comments {
+    height: 280px;
+    border-bottom: 1px solid #f0f3f6;
+}
+
+.comments_header {
+    height: 60px;
+    padding: 8px 0px;
+    color: #7c7c7c;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f0f3f6;
+}
+.comment-action {
+    padding-left: 8px;
+    cursor: "auto";
+}

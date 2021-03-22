@@ -1,0 +1,17 @@
+.post {
+}
+.card {
+    margin-top: 20px;
+    height: 240;
+    width: 250px;
+}
+.card_body {
+    height: 60px;
+}
+.card_content {
+    white-space: nowrap;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 3;
+}

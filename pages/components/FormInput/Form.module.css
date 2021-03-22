@@ -1,0 +1,15 @@
+.forminput {
+    width: 50%;
+    min-width: 350px;
+    background-color: white;
+    padding: 30px 10px;
+    border-radius: 20px;
+    box-shadow: 0px 0px 20px black;
+}
+.forminput h1 {
+    text-align: center;
+    font-family: "Courier New", Courier, monospace;
+    font-weight: bold;
+
+    color: #1abeff;
+}

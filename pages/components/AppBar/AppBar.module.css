@@ -1,0 +1,38 @@
+.appbar {
+    width: 100%;
+}
+.appbar_title {
+    background-color: antiquewhite;
+    height: 60px;
+    border-radius: 15px 15px 15px 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+.appbar_logo {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 30px;
+    font-weight: bold;
+    height: 100%;
+    padding: 0px 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.appbar_title strong {
+    color: rgb(137, 204, 124);
+    font-family: "Courier New", Courier, monospace;
+    font-size: 30px;
+}
+.user_item {
+    width: 100%;
+    height: 100%;
+    padding: 0px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+.user_item h3 {
+    margin: 0px 8px;
+}
