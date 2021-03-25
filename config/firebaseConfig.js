@@ -1,6 +1,6 @@
 import 'firebase/firestore';
-import firebase from 'firebase/app';
 import 'firebase/storage';
+import firebase from 'firebase';
 
 
 var firebaseConfig = {
@@ -20,9 +20,11 @@ if (!firebase?.apps?.length) {
 const db = firebase.firestore();
 var storage = firebase.storage();
 var Timestamp = firebase.firestore.Timestamp;
+const firebaseAuth = firebase.auth();
 
 export default db;
 export {
     storage,
-    Timestamp
+    Timestamp,
+    firebaseAuth,
 }

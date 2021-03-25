@@ -2,8 +2,14 @@
 }
 .card {
     margin-top: 20px;
-    height: 240;
+    border-radius: 20px;
     width: 250px;
+    overflow: hidden;
+}
+.card:hover,
+.card:focus,
+.card:active {
+    box-shadow: 5px 5px 10px black;
 }
 .card_body {
     height: 60px;

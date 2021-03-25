@@ -1,5 +1,5 @@
 .comments {
-    height: 280px;
+    height: 600px;
     border-bottom: 1px solid #f0f3f6;
 }
 
@@ -14,5 +14,22 @@
 }
 .comment-action {
     padding-left: 8px;
-    cursor: "auto";
+    cursor: pointer;
+}
+.comments_box{
+    border: 1px solid black;
+    height: 500px;
+    max-height: 400px;
+    overflow: auto;
+
+}
+.comment_form{
+    margin-top:10px ;
+
+
+}
+.comment_form TextArea{
+    border-radius: 20px;
+    height: 50px;
+    max-height: 100px;
 }

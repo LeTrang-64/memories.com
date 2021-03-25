@@ -1,23 +1,59 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import db from '../config/firebaseConfig'
+import { firebaseAuth } from '../config/firebaseConfig'
 import Link from 'next/link'
-import AppBar from './components/AppBar';
-import Posts from './components/Posts';
-import { getStaticProps } from './api/document';
+import AppBar from '../components/AppBar';
+import Posts from '../components/Posts';
 import { useEffect, useState } from 'react';
 import { Row, Col } from 'antd';
 
 
+
+
+
 export default function Home() {
 
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    const unregisterAuthObserver = firebaseAuth.onAuthStateChanged(async (user) => {
+      if (!user) {
+        console.log("not login");
+        return;
+      }
+      console.log("login user", user.displayName);
+      const token = await user.getIdToken();
+      console.log('token', token);
+
+      console.log(user.uid);
+      await db.collection("users").doc(user.uid).set({
+        uid: user.uid,
+        displayName: user.displayName || null,
+        email: user.email || null,
+        phoneNumber: user.phoneNumber || null,
+        photoURL: user.photoURL,
+
+      })
+        .then(() => {
+          console.log("User successfully login!")
+        })
+        .catch((error) => {
+          console.error("Error writing user: ", error);
+        });
+      setUser(user);
+    });
+    return () => {
+      if(unregisterAuthObserver) unregisterAuthObserver();
+    } // Make sure we un-register Firebase observers when the component unmounts.
+  }, []);
+  // ----------------------get Data----------
 
   const [data, setData] = useState([]);
   useEffect(() => {
 
     const sub = db.collection("Todos").onSnapshot(snap => {
       let arr = []
-      console.log(snap);
+      // console.log(snap);
       snap.forEach((doc) => {
         const newData = {
           id: doc.id,
@@ -26,7 +62,6 @@ export default function Home() {
         arr.push(newData)
       });
       setData(arr)
-
       console.log('get data done')
     })
 
@@ -36,7 +71,6 @@ export default function Home() {
   }, [])
 
 
-  console.log(data);
 
   if (!data) return 'loadding'
   return (
@@ -44,31 +78,27 @@ export default function Home() {
       <Head>
         <title>Memories</title>
         <link rel="icon" href="/favicon.ico" />
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+</style>
       </Head>
-      <AppBar />
+      <AppBar currentUser={user} />
       <div className={styles.main}>
-        <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} justify="space-between">
-          <Col className="gutter-row" span={4} >
-
+        <Row  >
+          <Col span={4} >
           </Col>
-          <Col className="gutter-row" span={16} >
+          <Col span={16} >
             <Link href="/AddEdit">
               <a>Add content</a>
             </Link>
-
             <Posts posts={data} className={styles.posts} />
-
           </Col>
 
-          <Col className="gutter-row" span={4} ></Col>
+          <Col span={4} ></Col>
 
 
         </Row>
-        {/* <Link href="/AddEdit">
-          <a>Add content</a>
-        </Link>
 
-        <Posts posts={data} className={styles.posts} /> */}
       </div>
 
 

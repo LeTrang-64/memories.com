@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "export": "next export",
+    "deploy": "yarn build & yarn export & firebase deploy --only hosting",
     "start": "next start"
   },
   "dependencies": {
@@ -14,6 +16,7 @@
     "next": "10.0.8",
     "react": "17.0.1",
     "react-dom": "17.0.1",
+    "react-firebaseui": "^4.1.0",
     "react-hook-form": "^6.15.4",
     "uuidv4": "^6.2.6"
   }

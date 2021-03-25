@@ -10,6 +10,9 @@
 .article_author_wrap {
     position: relative;
     top: 210px;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
 }
 .article_author_wrap h6 {
     color: #7b93a5;
@@ -21,6 +24,7 @@
 }
 .article_content {
     margin: 16px 0px;
+    text-align: justify;
 }
 .article_action {
     height: 60px;
@@ -36,16 +40,5 @@
     cursor: pointer;
 }
 .article_img {
-}
 
-/* .article_main {
-    width: 100%;
-    display: flex;
-    justify-content: center;
 }
-.article_container {
-    width: 1020px;
-    display: flex;
-}
-.article_box {
-} */

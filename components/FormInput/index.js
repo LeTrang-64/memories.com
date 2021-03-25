@@ -1,9 +1,9 @@
 import { Form, Input, InputNumber, Button, Upload, Select } from 'antd';
 import { UploadOutlined, InboxOutlined } from '@ant-design/icons';
-import styles from '../FormInput/Form.module.css'
+import styles from './Form.module.css'
 import { useEffect, useState } from "react"
-import { storage, Timestamp } from '../../../config/firebaseConfig'
-import db from '../../../config/firebaseConfig'
+import { storage, Timestamp,firebaseAuth } from '../../config/firebaseConfig'
+import db from '../../config/firebaseConfig'
 
 import { useRouter } from 'next/router'
 
@@ -46,7 +46,6 @@ const FormInput = (props) => {
     const { fields } = props;
     const [form] = Form.useForm();
     const [action, setAction] = useState('ADD');
-    // form.setFieldsValue({ post: { fields } });
     useEffect(() => {
         console.log(fields);
         form.setFieldsValue(fields)
@@ -78,7 +77,7 @@ const FormInput = (props) => {
                 }
             },
             (error) => {
-                // Handle unsuccessful uploads
+                console.log(error)// Handle unsuccessful uploads
             },
             () => {
                 uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
@@ -107,10 +106,11 @@ const FormInput = (props) => {
     function uploadPost(url, post) {
         const time = Timestamp.now();
         console.log(time.toMillis());
+        const user=firebaseAuth.currentUser;
 
 
         db.collection("Todos").doc().set({
-            userid: "jgajk",
+            userid: user.uid,
             title: post.title,
             website: post.website,
             category: post.category,

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import FormInPut from './components/FormInput';
+import FormInPut from '../components/FormInput';
 import db from '../config/firebaseConfig'
 import styles from '../styles/AddEdit.module.css'
 import { useRouter } from 'next/router';

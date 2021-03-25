@@ -1,13 +1,23 @@
 import React from 'react';
 import { Card, Avatar } from 'antd';
-import styles from '../Posts/Posts.module.css'
+import styles from './Posts.module.css'
 import { HeartTwoTone, CommentOutlined, DislikeOutlined } from '@ant-design/icons'
 import { useRouter } from 'next/router';
+import {useEffect,useState} from "react";
+import db from "../../config/firebaseConfig";
 const { Meta } = Card;
 
 function Post(props) {
     const { post } = props;
+    const [author,setAuthor]=useState(null);
+
     const router = useRouter()
+    useEffect(()=>{
+        const userRef=db.collection("users").doc(post.userid).onSnapshot(snap=>{
+            setAuthor(snap.data());
+
+        })
+    },[])
 
 
     return (
@@ -26,7 +36,7 @@ function Post(props) {
         >
 
             <Meta title={post.title}
-                avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+                avatar={<Avatar src={author?.photoURL} />}
                 description={<div className={styles.card_content}>{post.content}</div>} className={styles.card_body}
                 onClick={() => router.push({
                     pathname: '/Article',
