@@ -4,12 +4,18 @@ import AppBar from '../components/AppBar';
 import { Avatar } from 'antd';
 import { useRouter } from 'next/router';
 import db, { firebaseAuth } from '../config/firebaseConfig'
+import firebase from 'firebase';
 import { Row, Col } from 'antd';
-import {HeartTwoTone, CommentOutlined, DislikeOutlined, StarTwoTone, LikeFilled, LikeOutlined} from '@ant-design/icons'
+import {
+    HeartTwoTone,
+    StarTwoTone,
+    HeartFilled, DislikeFilled, DislikeTwoTone
+} from '@ant-design/icons'
 
 import { Button, Image, Tooltip } from 'antd';
 import Comments from '../components/Comments';
 import { dateToYMD } from '../utils/dateToYMD';
+import Loading from "../components/Loading";
 
 
 
@@ -24,7 +30,6 @@ const Article = (props) => {
     const [rates, setRates] = useState([]);
     const [likes,setLikes]=useState([]);
     const [disLikes,setDislikes]=useState([]);
-    const [comments,setComments]=useState([]);
 
     //get post by ID
     const docRef = db.collection("Todos").doc(id);
@@ -35,46 +40,27 @@ const Article = (props) => {
         const sub = docRef.onSnapshot(snap => {
             const newdata = snap.data();
             setData(newdata);
+            console.log({newdata});
             console.log('get data done')
-            getAuthorById(newdata.userid);  //id of author
+            getUserById(newdata.userid);  //id of author
         })
-        const snapLikes = docRef.collection('likes').onSnapshot(snap => {
-            if (snap) {
-                setLikes(snap.docs.map(snap => ({ ...snap.data(), id: snap.id })));
-            }
-           }
-        )
-        const snapDislikes = docRef.collection('dislikes').onSnapshot(snap => {
-                console.log(snap);
-                if (snap) {
-                    setDislikes(snap.docs.map(snap => ({...snap.data(), id: snap.id})));
-                }
-            }
-        )
+
 
         return () => {
             if (sub) sub()
-            if(snapLikes()) snapLikes();
-            if(snapDislikes()) snapDislikes();
+
         }
     }, [id]);
 
 
-    async function getAuthorById(id) {
+    async function getUserById(id) {
 
         const userRef = db.collection("users").doc(id);
         try {
             const snapUser = await userRef.onSnapshot(snap => {
                 setAuthor({ ...snap.data(), id: snap.id })
             })
-            const snapRates = await userRef.collection('rates').onSnapshot(snap => {
 
-                if (snap) {
-                    setRates(snap.docs.map(snap => ({ ...snap.data(), id: snap.id })))
-                }
-
-            }
-            )
         } catch (e) {
             console.log(e);
         }
@@ -90,20 +76,19 @@ const Article = (props) => {
             case "LIKE":
                 {
                     try {
-                        const snapLike = await docRef.collection("likes").doc(user.uid);
-                        snapLike.get().then((doc)=>{
-                            if(doc.exists){
-                                console.log('you liked before')
-                                snapLike.delete().then(()=>{
-                                    //do something
-                                })
-                            }else{
-                                snapLike.set({
-                                            name: user.displayName,
-                                        });
-                                console.log("success like")
-                            }
+                        const arr=data.like;
+                        const status=data.like.indexOf(user.uid)!==-1;
+                        if(status){
+                            docRef.update({
+                                like: firebase.firestore.FieldValue.arrayRemove(user.uid),
+                            })
+
+                        }else{
+                            docRef.update({
+                                like: firebase.firestore.FieldValue.arrayUnion(user.uid),
+
                         })
+                        }
 
                     } catch (e) {
                         console.log(e);
@@ -113,22 +98,19 @@ const Article = (props) => {
             case "DISLIKE":
                 {
                     try {
-                        const snapDislike = await docRef.collection("dislikes").doc(user.uid);
-                        snapDislike.get().then((doc)=>{
-                            if(doc.exists){
-                                console.log('you disliked before')
-                                snapDislike.delete().then(()=>{
-                                    //do something
+                            const arr=data.dislike;
+                            const status=data.dislike.indexOf(user.uid)!==-1;
+                            if(status){
+                                docRef.update({
+                                    dislike: firebase.firestore.FieldValue.arrayRemove(user.uid),
                                 })
+
                             }else{
-                                snapDislike.set({
-                                    name: user.displayName,
-                                });
-                                console.log("success dislike")
+                                docRef.update({
+                                    dislike: firebase.firestore.FieldValue.arrayUnion(user.uid),
 
+                                })
                             }
-                        })
-
 
                     } catch (e) {
                         console.log(e);
@@ -146,17 +128,25 @@ const Article = (props) => {
         try {
             const userRef = db.collection("users").doc(author.id);
 
-            const snapUser = await userRef.collection("rates").doc(user.uid).set({
-                name: user.displayName,
-            });
+            const status=author.rates.indexOf(user.uid)!==-1;
+            if(status){
+                userRef.update({
+                    rates: firebase.firestore.FieldValue.arrayRemove(user.uid),
+                })
+
+            }else{
+                userRef.update({
+                    rates: firebase.firestore.FieldValue.arrayUnion(user.uid),
+
+                })
+            }
 
         } catch (e) {
             console.log(e);
         }
 
     }
-    if (!data.content) return 'Loading...'
-
+    if (!data.content) return <Loading />
     const time = dateToYMD(data.startedAt.toDate()); // Nov 5;
 
     return (
@@ -174,7 +164,7 @@ const Article = (props) => {
                             <Avatar size={64} src={author?.photoURL} />
                             <h6 className={styles.article_subtitle}>{author?.displayName}</h6>
                             <div>
-                                <span>{rates?.length}</span>
+                                <span>{author?.rates?.length}</span>
                                 <StarTwoTone twoToneColor="#eb2f96" />
 
                             </div>
@@ -196,19 +186,23 @@ const Article = (props) => {
                         <div>
                             <Tooltip key="comment-basic-like" title="Like">
                                 <Button onClick={() => handleClick('LIKE')}>
-                                    <HeartTwoTone twoToneColor="#eb2f96" />
-                                    <span>{likes?.length}</span>
+                                    {user&& data?.like?.indexOf(user.uid)>-1?
+                                        <HeartFilled  style={{color: "hotpink"}}/>
+                                        :<HeartTwoTone twoToneColor="#eb2f96" />
+                                    }
+                                    <span>{data?.like?.length}</span>
                                 </Button>
                             </Tooltip>
                             <Tooltip key="comment-basic-dislike" title="Dislike">
                                 <Button onClick={() => handleClick('DISLIKE')}>
-                                      <DislikeOutlined key="dislike" />
-                                    <span>{disLikes?.length}</span>
+                                    {user&& data?.dislike?.indexOf(user.uid)>-1?
+                                        <DislikeFilled  style={{color: "hotpink"}}/>
+                                        :<DislikeTwoTone twoToneColor="#eb2f96" />
+                                    }
+                                    <span>{data?.dislike?.length}</span>
                                 </Button>
                             </Tooltip>
-                            <Button>
-                                <CommentOutlined key="comments" />
-                            </Button>
+
                         </div>
                         {user&&
                             (user.uid==author?.id)?(<div className={styles.article_action_edit}

@@ -2,10 +2,12 @@ import React from 'react';
 import Post from './Post';
 import styles from './Posts.module.css'
 import { Row, Col } from 'antd';
+import Loading from "../Loading";
 
 function Posts(props) {
     const { posts } = props;
     // console.log(posts)
+    if(!posts) return <Loading />
     return (
         <div className={styles.posts} >
             <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} >

@@ -5,6 +5,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    border-bottom: 1px solid #F0F3F6;
 }
 .appbar_title {
     background-color: #8ca4d4;
@@ -26,6 +27,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
 }
 .appbar_title strong {
     color: #e7e8fa;

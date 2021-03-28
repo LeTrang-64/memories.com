@@ -11,7 +11,7 @@ import {dateToYMD} from "../../utils/dateToYMD";
 function Cmt(props) {
     const {comment}=props;
 
-        const time=comment.timeSend.toDate();
+    const time=comment?.timeSend?.toDate()||null;
 
 
 // const date=new Date(time.toMillis()*1000);

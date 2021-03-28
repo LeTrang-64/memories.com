@@ -7,6 +7,7 @@ import AppBar from '../components/AppBar';
 import Posts from '../components/Posts';
 import { useEffect, useState } from 'react';
 import { Row, Col } from 'antd';
+import Loading from "../components/Loading";
 
 
 
@@ -32,6 +33,7 @@ export default function Home() {
         email: user.email || null,
         phoneNumber: user.phoneNumber || null,
         photoURL: user.photoURL,
+        rates:[],
 
       })
         .then(() => {
@@ -72,7 +74,7 @@ export default function Home() {
 
 
 
-  if (!data) return 'loadding'
+  if (!data) return <Loading />
   return (
     <div className={styles.container}>
       <Head>

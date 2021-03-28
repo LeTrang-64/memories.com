@@ -1,6 +1,5 @@
 .comments {
-    height: 600px;
-    border-bottom: 1px solid #f0f3f6;
+
 }
 
 .comments_header {
@@ -17,19 +16,42 @@
     cursor: pointer;
 }
 .comments_box{
-    border: 1px solid black;
+    border: 1px solid #F0F3F6;
     height: 500px;
     max-height: 400px;
     overflow: auto;
+    padding: 16px;
+    margin-bottom: 200px;
+
+}
+.comments_empty{
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
 
 }
 .comment_form{
     margin-top:10px ;
-
+}
+/*---------------message_box------*/
+.message_box{
+    padding: 16px;
+    border:1.5px solid #F0F3F6;
 
 }
-.comment_form TextArea{
-    border-radius: 20px;
-    height: 50px;
-    max-height: 100px;
+
+.message_user>div{
+    display: flex;
+    font-size: 18px;
+    font-weight: 500;
+    align-items: center;
+    padding: 8px;
 }
+.message_user p{
+   margin: 0px 0px;
+    padding-left:5px ;
+
+}
+

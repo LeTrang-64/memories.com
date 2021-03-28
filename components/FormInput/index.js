@@ -115,8 +115,8 @@ const FormInput = (props) => {
             website: post.website,
             category: post.category,
             content: post.content,
-            like: 0,
-            dislike: 0,
+            like: [],
+            dislike: [],
             url: url,
             startedAt: time
         })
