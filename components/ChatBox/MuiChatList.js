@@ -16,7 +16,6 @@ function MuiChatList(props) {
         }
     })
 
-    console.log("test push");
     if (!chats?.length) return <Loading isNormal={'default'}/>;
 
     return (
