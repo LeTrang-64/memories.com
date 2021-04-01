@@ -2,10 +2,11 @@ import React from 'react';
 import styles from './AppBar.module.css'
 
 import Image from 'next/image'
-import { Avatar, Button } from 'antd';
-import { useRouter } from 'next/router';
-import { firebaseAuth } from '../../config/firebaseConfig';
-import { UserOutlined } from '@ant-design/icons';
+import {Avatar, Button} from 'antd';
+import {useRouter} from 'next/router';
+import {firebaseAuth} from '../../config/firebaseConfig';
+import {UserOutlined} from '@ant-design/icons';
+
 
 const myLoader = ({ src, width, quality }) => {
     return src
@@ -27,13 +28,18 @@ function AppBar(props) {
             console.log(error)// An error happened.
         });
     }
+    const handleClick = () => {
+
+
+    }
 
     return (
 
         <div className={styles.appbar}>
 
             <div className={styles.appbar_logo}>
-                <span onClick={() => router.push('/')}>ReView</span>
+                <Avatar size={24} style={{ backgroundColor: "#E60023" }}><span className={styles.appbar_logo_icon}>R</span></Avatar>
+                <Button onClick={() => router.push('/')}>Home</Button>
             </div>
 
 
@@ -50,14 +56,18 @@ function AppBar(props) {
                 />
             </div>
 
+
             {!currentUser ? (<div className={styles.user_item}>
                 <Button onClick={() => router.push('/Login')}>Login</Button>
-                <Avatar size={48} icon={<UserOutlined />} />
+                <Avatar size={36} icon={<UserOutlined />} style={{ cursor: 'pointer' }} />
             </div>)
                 : (<div className={styles.user_item} >
                     <Button onClick={handleLogout}>Logout</Button>
                     <h3>{currentUser?.displayName}</h3>
-                    <Avatar size={48} src={currentUser?.photoURL} />
+                    <Avatar size={36} src={currentUser?.photoURL} style={{ cursor: 'pointer' }} onClick={() => router.push({
+                        pathname: '/Profile',
+                        query: { id: currentUser.uid },
+                    })} />
 
                 </div>)
 

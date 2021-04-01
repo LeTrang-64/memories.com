@@ -1,7 +1,7 @@
 import db from "../config/firebaseConfig";
 
 export default (id, callback) => {
-    const docRef = db.collection("Todos").doc(id);
+    const docRef = db.collection("todos").doc(id);
     return docRef.onSnapshot(snap => {
         const newdata = snap.data();
         const authorId=newdata.userid;

@@ -1,0 +1,27 @@
+.user_profiles {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 16px;
+    position: sticky;
+    top: 88px;
+}
+.user_card {
+    width: 230px;
+    padding: 20px 0px;
+    background-color: white;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-flow: column;
+    box-shadow: 0px 2px 4px rgb(0 0 0 / 8%);
+}
+.user_infor {
+    margin-top: 5px;
+    width: 70%;
+    text-align: left;
+}
+.user_infor div {
+    margin: 5px 0px;
+}

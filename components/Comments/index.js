@@ -1,11 +1,10 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from './Comments.module.css';
-import { useState ,useEffect} from 'react';
 
-import {Comment, Tooltip, Avatar, Input, Button,Form,Texta} from 'antd';
-import { SendOutlined, FilterOutlined ,CommentOutlined } from '@ant-design/icons';
+import {Input} from 'antd';
+import {CommentOutlined, FilterOutlined} from '@ant-design/icons';
 import Cmt from "./Cmt";
-import db, {firebaseAuth, Timestamp} from "../../config/firebaseConfig";
+import db from "../../config/firebaseConfig";
 import Message from "./Message";
 
 
@@ -17,7 +16,7 @@ function Comments(props) {
 
     // -------------get-comment-list----------
 
-    const docRef = db.collection("Todos").doc(idArticle);
+    const docRef = db.collection("todos").doc(idArticle);
     useEffect(()=>{
         const sub=docRef.collection("comments").orderBy("timeSend","desc").onSnapshot(snapshot => {
             if(snapshot){
@@ -31,7 +30,6 @@ function Comments(props) {
         }
 
     },[])
-    console.log(cmts);
 
 
 
@@ -49,7 +47,7 @@ function Comments(props) {
 
             </div>
             <div className={styles.comments_box}>
-                {cmts.length>0? cmts.map((cmt,index)=><Cmt key={index} comment={cmt}/>):
+                {cmts.length>0? cmts.map((cmt,index)=><Cmt key={index} comment={cmt} idArticle={idArticle}/>):
                     <div className={styles.comments_empty}>
                         <CommentOutlined style={{fontSize: '50px', opacity:'0.3'}} />
                         <div style={{opacity:'0.3'}}>Hãy là người bình luận đầu tiên</div>

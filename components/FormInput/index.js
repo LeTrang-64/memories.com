@@ -1,11 +1,12 @@
-import { Form, Input, InputNumber, Button, Upload, Select } from 'antd';
-import { UploadOutlined, InboxOutlined } from '@ant-design/icons';
+import {Button, Form, Input, Select, Upload} from 'antd';
+import {UploadOutlined} from '@ant-design/icons';
 import styles from './Form.module.css'
-import { useEffect, useState } from "react"
-import { storage, Timestamp,firebaseAuth } from '../../config/firebaseConfig'
-import db from '../../config/firebaseConfig'
+import {useEffect, useState} from "react"
+import db, {firebaseAuth, storage, Timestamp} from '../../config/firebaseConfig'
+import 'react-toastify/dist/ReactToastify.css';
 
-import { useRouter } from 'next/router'
+
+import {useRouter} from 'next/router'
 
 
 const layout = {
@@ -44,6 +45,7 @@ const normFile = (e) => {
 
 const FormInput = (props) => {
     const { fields } = props;
+    const currentUser = firebaseAuth.currentUser;
     const [form] = Form.useForm();
     const [action, setAction] = useState('ADD');
     useEffect(() => {
@@ -106,10 +108,10 @@ const FormInput = (props) => {
     function uploadPost(url, post) {
         const time = Timestamp.now();
         console.log(time.toMillis());
-        const user=firebaseAuth.currentUser;
+        const user = firebaseAuth.currentUser;
 
 
-        db.collection("Todos").doc().set({
+        db.collection("todos").doc().set({
             userid: user.uid,
             title: post.title,
             website: post.website,
@@ -130,7 +132,7 @@ const FormInput = (props) => {
     }
     // ---------------------EDIT post-----------------
     function editPost(url, post) {
-        db.collection("Todos").doc(fields.id).update({
+        db.collection("todos").doc(fields.id).update({
             title: post.title,
             website: post.website,
             category: post.category,
@@ -149,9 +151,11 @@ const FormInput = (props) => {
             });
 
     }
-
-
     const onFinish = (values) => {
+        if (!currentUser) {
+            alert("you have to login!")
+
+        }
         console.log(values);
         setPost(values);
         const newpost = values;
@@ -175,7 +179,6 @@ const FormInput = (props) => {
             <h1>Add new article</h1>
             <Form {...layout} form={form} name="global_state" onFinish={onFinish}
                 validateMessages={validateMessages}>
-
                 <Form.Item
                     name={'title'}
                     label="Title"
@@ -219,7 +222,7 @@ const FormInput = (props) => {
 
                 </Form.Item>
                 <Form.Item name={'content'} label="Introduction">
-                    <Input.TextArea style={{ height: '200px' }} />
+                    <Input.TextArea style={{ height: '100px' }} />
                 </Form.Item>
                 <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
                     {

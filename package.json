@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 8888",
     "build": "next build",
     "export": "next export",
     "deploy": "yarn build & yarn export & firebase deploy --only hosting",
@@ -11,13 +11,16 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.6.2",
+    "@fortawesome/fontawesome-svg-core": "^1.2.35",
+    "@fortawesome/free-solid-svg-icons": "^5.15.3",
+    "@fortawesome/react-fontawesome": "^0.1.14",
     "antd": "^4.14.0",
     "firebase": "^8.3.0",
     "next": "10.0.8",
     "react": "17.0.1",
+    "react-chat-elements": "^10.14.0",
     "react-dom": "17.0.1",
     "react-firebaseui": "^4.1.0",
-    "react-hook-form": "^6.15.4",
-    "uuidv4": "^6.2.6"
+    "react-toastify": "^7.0.3"
   }
 }

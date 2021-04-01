@@ -1,5 +1,5 @@
 import React from 'react';
-import {Avatar, Button, Form, Image, Input} from "antd";
+import {Avatar, Button, Form, Input} from "antd";
 import styles from './Comments.module.css';
 
 
@@ -18,7 +18,7 @@ function Message(props) {
         }
 
     };
-    const docRef = db.collection("Todos").doc(idArticle);
+    const docRef = db.collection("todos").doc(idArticle);
 
     function sendComment(value,user){
         const time = Timestamp.now();
@@ -27,6 +27,8 @@ function Message(props) {
             idUser:user.uid,
             cmtLine:value.comment,
             timeSend:time,
+            like:[],
+            dislike:[],
         }).then(() => {
             console.log("User successfully cmt!")
 

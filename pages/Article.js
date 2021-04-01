@@ -1,23 +1,14 @@
-import React, {createElement, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from '../styles/Article.module.css'
 import AppBar from '../components/AppBar';
-import { Avatar } from 'antd';
-import { useRouter } from 'next/router';
-import db, { firebaseAuth } from '../config/firebaseConfig'
-import firebase from 'firebase';
-import { Row, Col } from 'antd';
-import {
-    HeartTwoTone,
-    StarTwoTone,
-    HeartFilled, DislikeFilled, DislikeTwoTone
-} from '@ant-design/icons'
-
-import { Button, Image, Tooltip } from 'antd';
+import {Avatar, Button, Col, Image, Row, Tooltip} from 'antd';
+import {useRouter} from 'next/router';
+import db, {firebaseAuth} from '../config/firebaseConfig'
+import {DislikeFilled, DislikeTwoTone, HeartFilled, HeartTwoTone, StarTwoTone} from '@ant-design/icons'
 import Comments from '../components/Comments';
-import { dateToYMD } from '../utils/dateToYMD';
+import {dateToYMD} from '../utils/dateToYMD';
 import Loading from "../components/Loading";
-
-
+import {handleAction} from "../common/handleAction";
 
 
 const Article = (props) => {
@@ -28,19 +19,19 @@ const Article = (props) => {
     const [data, setData] = useState({});
     const [author, setAuthor] = useState(null);
     const [rates, setRates] = useState([]);
-    const [likes,setLikes]=useState([]);
-    const [disLikes,setDislikes]=useState([]);
 
     //get post by ID
-    const docRef = db.collection("Todos").doc(id);
+    const docRef = db.collection("todos").doc(id);
 
 
 
     useEffect(() => {
         const sub = docRef.onSnapshot(snap => {
-            const newdata = snap.data();
+            const newdata = {
+                id: snap.id,
+                ...snap.data()
+            }
             setData(newdata);
-            console.log({newdata});
             console.log('get data done')
             getUserById(newdata.userid);  //id of author
         })
@@ -51,6 +42,7 @@ const Article = (props) => {
 
         }
     }, [id]);
+    console.log("daa id", data.id)
 
 
     async function getUserById(id) {
@@ -60,6 +52,12 @@ const Article = (props) => {
             const snapUser = await userRef.onSnapshot(snap => {
                 setAuthor({ ...snap.data(), id: snap.id })
             })
+            const snapRates = await userRef.collection('rates').onSnapshot(snap => {
+
+                if (snap) {
+                    setRates(snap.docs.map(snap => ({ ...snap.data(), id: snap.id })))
+                }
+            })
 
         } catch (e) {
             console.log(e);
@@ -68,59 +66,11 @@ const Article = (props) => {
     }
 
     async function handleClick(action) {
-        if(!user) {
+        if (!user) {
             alert("you have to Login");
             return
         };
-        switch (action) {
-            case "LIKE":
-                {
-                    try {
-                        const arr=data.like;
-                        const status=data.like.indexOf(user.uid)!==-1;
-                        if(status){
-                            docRef.update({
-                                like: firebase.firestore.FieldValue.arrayRemove(user.uid),
-                            })
-
-                        }else{
-                            docRef.update({
-                                like: firebase.firestore.FieldValue.arrayUnion(user.uid),
-
-                        })
-                        }
-
-                    } catch (e) {
-                        console.log(e);
-                    }
-                }
-                break;
-            case "DISLIKE":
-                {
-                    try {
-                            const arr=data.dislike;
-                            const status=data.dislike.indexOf(user.uid)!==-1;
-                            if(status){
-                                docRef.update({
-                                    dislike: firebase.firestore.FieldValue.arrayRemove(user.uid),
-                                })
-
-                            }else{
-                                docRef.update({
-                                    dislike: firebase.firestore.FieldValue.arrayUnion(user.uid),
-
-                                })
-                            }
-
-                    } catch (e) {
-                        console.log(e);
-                    }
-                }
-                break;
-
-            default:
-                break;
-        }
+        handleAction(action, user, data);
 
     }
 
@@ -128,24 +78,28 @@ const Article = (props) => {
         try {
             const userRef = db.collection("users").doc(author.id);
 
-            const status=author.rates.indexOf(user.uid)!==-1;
-            if(status){
-                userRef.update({
-                    rates: firebase.firestore.FieldValue.arrayRemove(user.uid),
-                })
+            const snapUser = await userRef.collection("rates").doc(user.uid)
+            snapUser.get().then(doc => {
+                if (doc.exists) {
+                    snapUser.delete().then(() => {
 
-            }else{
-                userRef.update({
-                    rates: firebase.firestore.FieldValue.arrayUnion(user.uid),
+                    })
 
-                })
-            }
+                } else {
+                    snapUser.set({
+                        name: user.displayName,
+                    })
+                    console.log("success rate")
 
+                }
+
+            })
         } catch (e) {
             console.log(e);
         }
 
     }
+
     if (!data.content) return <Loading />
     const time = dateToYMD(data.startedAt.toDate()); // Nov 5;
 
@@ -161,10 +115,14 @@ const Article = (props) => {
                     <div className={styles.article_author}>
                         <div className={styles.article_author_wrap}>
                             <h6>BAI VIET BOI</h6>
-                            <Avatar size={64} src={author?.photoURL} />
+                            <Avatar size={64} src={author?.photoURL} onClick={() => router.push({
+                                pathname: '/Profile',
+                                query: { id: author.id },
+                            })}
+                                style={{ cursor: 'pointer' }} />
                             <h6 className={styles.article_subtitle}>{author?.displayName}</h6>
                             <div>
-                                <span>{author?.rates?.length}</span>
+                                <span>{rates?.length}</span>
                                 <StarTwoTone twoToneColor="#eb2f96" />
 
                             </div>
@@ -186,30 +144,30 @@ const Article = (props) => {
                         <div>
                             <Tooltip key="comment-basic-like" title="Like">
                                 <Button onClick={() => handleClick('LIKE')}>
-                                    {user&& data?.like?.indexOf(user.uid)>-1?
-                                        <HeartFilled  style={{color: "hotpink"}}/>
-                                        :<HeartTwoTone twoToneColor="#eb2f96" />
+                                    {user && data?.like?.indexOf(user.uid) > -1 ?
+                                        <HeartFilled style={{ color: "hotpink" }} />
+                                        : <HeartTwoTone twoToneColor="#eb2f96" />
                                     }
                                     <span>{data?.like?.length}</span>
                                 </Button>
                             </Tooltip>
                             <Tooltip key="comment-basic-dislike" title="Dislike">
                                 <Button onClick={() => handleClick('DISLIKE')}>
-                                    {user&& data?.dislike?.indexOf(user.uid)>-1?
-                                        <DislikeFilled  style={{color: "hotpink"}}/>
-                                        :<DislikeTwoTone twoToneColor="#eb2f96" />
+                                    {user && data?.dislike?.indexOf(user.uid) > -1 ?
+                                        <DislikeFilled style={{ color: "hotpink" }} />
+                                        : <DislikeTwoTone twoToneColor="#eb2f96" />
                                     }
                                     <span>{data?.dislike?.length}</span>
                                 </Button>
                             </Tooltip>
 
                         </div>
-                        {user&&
-                            (user.uid==author?.id)?(<div className={styles.article_action_edit}
+                        {user &&
+                            (user.uid == author?.id) ? (<div className={styles.article_action_edit}
                             ><Button type="primary" onClick={() => router.push({
                                 pathname: '/AddEdit',
                                 query: { id: id },
-                            })}>Edit</Button></div>):(<div></div>)
+                            })}>Edit</Button></div>) : (<div></div>)
                         }
 
 

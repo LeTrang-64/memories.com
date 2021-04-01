@@ -1,0 +1,10 @@
+.search_box{
+    border-radius: 30px;
+    overflow: hidden;
+    background-color: white;
+    border:1px solid #ccc;
+
+}
+.search_box button{
+     border: none;
+}
