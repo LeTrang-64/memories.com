@@ -16,6 +16,7 @@
     "@fortawesome/react-fontawesome": "^0.1.14",
     "antd": "^4.14.0",
     "firebase": "^8.3.0",
+    "lodash": "^4.17.21",
     "next": "10.0.8",
     "react": "17.0.1",
     "react-chat-elements": "^10.14.0",

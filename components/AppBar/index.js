@@ -14,7 +14,7 @@ const myLoader = ({ src, width, quality }) => {
 
 function AppBar(props) {
     const router = useRouter();
-    const { currentUser } = props;
+    const {currentUser, handleShow} = props;
     // console.log(currentUser);
 
     const handleLogout = () => {
@@ -28,10 +28,7 @@ function AppBar(props) {
             console.log(error)// An error happened.
         });
     }
-    const handleClick = () => {
 
-
-    }
 
     return (
 
@@ -55,7 +52,7 @@ function AppBar(props) {
                     loader={myLoader}
                 />
             </div>
-
+            <Button onClick={handleShow}>Message</Button>
 
             {!currentUser ? (<div className={styles.user_item}>
                 <Button onClick={() => router.push('/Login')}>Login</Button>

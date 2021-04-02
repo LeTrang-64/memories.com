@@ -1,28 +1,11 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef} from 'react';
 import {Button, Input} from 'react-chat-elements'
 import db, {Timestamp} from '../../config/firebaseConfig'
-import getUser from "../../common/getUser"
 
 
 function MuiInput(props) {
-    const { currentUser, activeChat } = props;
-
-    const inputRef = useRef(null);
-
-    const [user, setUser] = useState();
-    useEffect(() => {
-
-
-        const sub = getUser(currentUser.uid, setUser);
-        console.log(user)
-
-        return () => {
-            if (sub) sub()
-        }
-
-    }, [])
-
-
+    const {currentUser, activeChatId} = props;
+    const inputRef = useRef("");
 
     function handleclick() {
         const value = inputRef.current.input.value;
@@ -31,8 +14,8 @@ function MuiInput(props) {
                 type: 'text',
                 text: value,
             }
-            console.log(user);
-            sendMessage(newMsg, user);
+            sendMessage(newMsg, currentUser);
+
         }
 
         console.log(value);
@@ -41,9 +24,8 @@ function MuiInput(props) {
     }
     function sendMessage(msg, user) {
         if (!user) return;
-        console.log(activeChat);
 
-        const chatRef = db.collection("chatroom").doc(activeChat.id);
+        const chatRef = db.collection("chatroom").doc(activeChatId);
         const time = Timestamp.now();
         chatRef.collection("messages").doc().set({
             userid: user.uid,
@@ -52,12 +34,11 @@ function MuiInput(props) {
         })
             .then(() => {
                 console.log("Document successfully send!");
-
+                inputRef.current.input.value = ""; //clear
             })
             .catch((error) => {
                 console.error("Error send document: ", error);
             });
-
 
     }
 

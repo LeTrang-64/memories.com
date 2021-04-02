@@ -10,15 +10,18 @@ import SearchBar from "../components/SearchBar";
 import MenuBar from "../components/MenuBar";
 import {useRouter} from "next/router";
 import {FileAddOutlined} from "@ant-design/icons";
-import MuiChatList from '../components/ChatBox/MuiChatList'
+import ChatList from "../components/ChatBox/ChatList";
+import ChatFeed from "../components/ChatBox/ChatFeed";
 
 
 export default function Home() {
   const router = useRouter();
   const [user, setUser] = useState(null);
-  const [chats, setChats] = useState([]);
   const [data, setData] = useState([]);
   const [queryData, setQueryData] = useState();
+  const [showChatList, setShowChatList] = useState(false);
+  const [activeChat, setActiveChat] = useState(false);
+
 
   useEffect(() => {
     const unregisterAuthObserver = firebaseAuth.onAuthStateChanged(async (user) => {
@@ -50,20 +53,6 @@ export default function Home() {
   }, []);
 
 
-  // get chat list
-
-  useEffect(() => {
-    if (!user)
-      return null;
-    const subChats = db.collection("chatroom").where("users", "array-contains", user.uid).onSnapshot(snapshots => {
-      setChats(snapshots.docs.map(snap => ({ ...snap.data(), id: snap.id })))
-    })
-
-    return () => {
-      if (subChats)
-        subChats()
-    }
-  }, [user])
 
   // ----------------------get Data----------
 
@@ -102,45 +91,60 @@ export default function Home() {
     setQueryData(arrNewdata);
   }
 
+  function handleShow() {
+    setShowChatList(!showChatList);
+  }
 
-  if (!data) return <Loading />
+  const [chat, setChat] = useState();
+  const [otherUser, setOtherUser] = useState();
+
+  function handleActiveChat(chat, otherUser) {
+    setOtherUser(otherUser);
+    console.log(otherUser);
+    setChat(chat);
+    setActiveChat(!activeChat);
+  }
+
+
+  if (!data) return <Loading/>
 
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Memories</title>
-        <link rel="icon" href="/favicon.ico" />
-        <style>
-          @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;400&display=swap');
-          @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Lobster&display=swap');
-        </style>
+      <div className={styles.container}>
+        <Head>
+          <title>Memories</title>
+          <link rel="icon" href="/favicon.ico"/>
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;400&display=swap');
+            @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Lobster&display=swap');
+          </style>
 
-      </Head>
-      <AppBar currentUser={user} />
-      <div className={styles.main}>
-        <Row  >
-          <Col span={5} >
-            <MenuBar handleClick={handleClick} />
-            <div className={styles.add_icon}>
-              <Avatar size={64} icon={<FileAddOutlined />} onClick={() => router.push('/AddEdit')} />
-            </div>
+        </Head>
 
-          </Col>
+        <AppBar currentUser={user} handleShow={() => handleShow()}/>
+
+        <div className={styles.main}>
+          <Row>
+            <Col span={5}>
+              <MenuBar handleClick={handleClick}/>
+              <div className={styles.add_icon}>
+                <Avatar size={64} icon={<FileAddOutlined/>} onClick={() => router.push('/AddEdit')}/>
+              </div>
+
+            </Col>
           <Col span={14} >
             <Posts posts={queryData} className={styles.posts} />
           </Col>
 
-          <Col span={5} >
-            <div className={styles.control_box}>
-              <SearchBar handleSearch={handleSearch} />
+            <Col span={5}>
+              <div className={styles.control_box}>
+                <SearchBar handleSearch={handleSearch}/>
 
-            </div>
-            <MuiChatList chats={chats} />
-            {/* <MuiDropdown /> */}
+              </div>
+              {showChatList && <ChatList user={user} handleActiveChat={handleActiveChat}/>}
+              {activeChat && <ChatFeed chat={chat} otherUser={otherUser}/>}
 
 
-
-          </Col>
+            </Col>
 
 
         </Row>
