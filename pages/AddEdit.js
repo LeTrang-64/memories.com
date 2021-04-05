@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import FormInPut from '../components/FormInput';
 import db from '../config/firebaseConfig'
 import styles from '../styles/AddEdit.module.css'
-import { useRouter } from 'next/router';
-
-
+import {useRouter} from 'next/router';
 
 
 function AddEdit(props) {
@@ -12,8 +10,8 @@ function AddEdit(props) {
     const { id } = router.query;
     const [fields, setFields] = useState(null);
     useEffect(() => {
-        const sub = db.collection("Todos").doc(id).onSnapshot(snap => {
-            const newdata = { id: id, ...snap.data() }
+        const sub = db.collection("todos").doc(id).onSnapshot(snap => {
+            const newdata = {id: id, ...snap.data()}
 
             setFields(newdata);
             console.log('get data done')
@@ -24,8 +22,6 @@ function AddEdit(props) {
         }
 
     }, [id])
-
-
 
     return (
         <div className={styles.form_add}>
