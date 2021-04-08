@@ -1,12 +1,7 @@
 .profile {
-    height: 100vh;
-    min-height: 600px;
-
+    min-height: 100vh;
     background-color: #f4f5f9;
-    /* background-image: url("https://i.pinimg.com/originals/93/a2/8b/93a28b6afffb2f347a139f32cc8d4659.png");
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover; */
+
 }
 
 .profile_container {

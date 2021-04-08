@@ -1,8 +1,7 @@
 import React from 'react';
-import { firebaseAuth } from '../config/firebaseConfig';
+import {firebaseAuth} from '../config/firebaseConfig';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import firebase from 'firebase';
-
 
 
 const uiConfig = {
@@ -20,9 +19,7 @@ const uiConfig = {
 function Login(props) {
     return (
         <div>
-            Login
             <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebaseAuth} />
-
         </div>
     );
 }

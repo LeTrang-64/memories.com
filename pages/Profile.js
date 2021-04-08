@@ -16,9 +16,9 @@ function Profile(props) {
     const router=useRouter();
     const { id } = router.query;
     console.log(id);
-    const[user,setUser]=useState();
-    const [datas,setDatas]=useState([]);
-    const[rates,setRates]=useState([]);
+    const [user, setUser] = useState();
+    const [data, setData] = useState([]);
+    const [rates, setRates] = useState([]);
     useEffect(()=>{
         if(!id)
             return;
@@ -51,7 +51,7 @@ function Profile(props) {
                     }
                     arr.push(newData)
                 });
-                setDatas(arr);
+                setData(arr);
                 console.log('get data done')
             })
 
@@ -61,7 +61,7 @@ function Profile(props) {
 
     },[id])
 
-    if(!datas||!user) return <Loading />
+    if (!data || !user) return <Loading/>
     return (
         <div className={styles.profile}>
             <AppBar currentUser={currentuser}/>
@@ -73,7 +73,7 @@ function Profile(props) {
 
                     </Col>
                     <Col span={16} >
-                        <PostOfUser datas={datas} user={user}/>
+                        <PostOfUser data={data} user={user}/>
 
                     </Col>
                     <Col span={2} >

@@ -3,7 +3,7 @@ import {MessageList} from "react-chat-elements";
 import getUser from "../../common/getUser";
 import {Avatar} from "antd";
 import Loading from "../Loading";
-import styles from "./ChatFeed/ChatFeed.module.css"
+import styles from "./ChatList/ChatList.module.css"
 
 
 function MyMessage(props) {

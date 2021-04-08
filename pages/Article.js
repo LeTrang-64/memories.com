@@ -9,6 +9,7 @@ import Comments from '../components/Comments';
 import {dateToYMD} from '../utils/dateToYMD';
 import Loading from "../components/Loading";
 import {handleAction} from "../common/handleAction";
+import ReactMarkdown from "react-markdown";
 
 
 const Article = (props) => {
@@ -22,8 +23,6 @@ const Article = (props) => {
 
     //get post by ID
     const docRef = db.collection("todos").doc(id);
-
-
 
     useEffect(() => {
         const sub = docRef.onSnapshot(snap => {
@@ -39,11 +38,8 @@ const Article = (props) => {
 
         return () => {
             if (sub) sub()
-
         }
     }, [id]);
-    console.log("daa id", data.id)
-
 
     async function getUserById(id) {
 
@@ -53,12 +49,10 @@ const Article = (props) => {
                 setAuthor({ ...snap.data(), id: snap.id })
             })
             const snapRates = await userRef.collection('rates').onSnapshot(snap => {
-
                 if (snap) {
                     setRates(snap.docs.map(snap => ({ ...snap.data(), id: snap.id })))
                 }
             })
-
         } catch (e) {
             console.log(e);
         }
@@ -126,16 +120,18 @@ const Article = (props) => {
                                 <StarTwoTone twoToneColor="#eb2f96" />
 
                             </div>
-                            <Tooltip >
+                            <Tooltip>
                                 <span>{time}</span>
                             </Tooltip>
-                            <Button onClick={() => onRate()} >Rate me</Button>
+                            <Button onClick={() => onRate()}>Rate me</Button>
                         </div>
                     </div>
                 </Col>
                 <Col span={12}>
-                    <div className={styles.article_title}><h1>{data?.title}</h1></div>
-                    <div className={styles.article_content}>{data?.content}</div>
+                    <div className={styles.article_content_wrap}>
+                        <div className={styles.article_title}><ReactMarkdown source={data?.title}/></div>
+                        <div className={styles.article_content}><ReactMarkdown source={data?.content}/></div>
+                    </div>
                     <div className={styles.article_img}>
                         <Image src={data.url} width="100%"></Image>
                     </div>
@@ -145,7 +141,7 @@ const Article = (props) => {
                             <Tooltip key="comment-basic-like" title="Like">
                                 <Button onClick={() => handleClick('LIKE')}>
                                     {user && data?.like?.indexOf(user.uid) > -1 ?
-                                        <HeartFilled style={{ color: "hotpink" }} />
+                                        <HeartFilled style={{color: "hotpink"}}/>
                                         : <HeartTwoTone twoToneColor="#eb2f96" />
                                     }
                                     <span>{data?.like?.length}</span>

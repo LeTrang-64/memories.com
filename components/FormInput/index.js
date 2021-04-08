@@ -1,14 +1,15 @@
-import {Button, Form, Input, Select, Upload} from 'antd';
+import {Button, Form, Input, message, Select, Upload} from 'antd';
 import {UploadOutlined} from '@ant-design/icons';
 import styles from './Form.module.css'
 import {useEffect, useState} from "react"
 import db, {firebaseAuth, storage, Timestamp} from '../../config/firebaseConfig'
-import 'react-toastify/dist/ReactToastify.css';
+import SimpleMDE from "react-simplemde-editor";
+import "easymde/dist/easymde.min.css";
 
 
 import {useRouter} from 'next/router'
 
-
+const {Option} = Select;
 const layout = {
     labelCol: {
         span: 4,
@@ -18,8 +19,6 @@ const layout = {
     },
 };
 
-const { Option } = Select;
-/* eslint-disable no-template-curly-in-string */
 
 const validateMessages = {
     required: '${label} is required!',
@@ -48,8 +47,8 @@ const FormInput = (props) => {
     const currentUser = firebaseAuth.currentUser;
     const [form] = Form.useForm();
     const [action, setAction] = useState('ADD');
+    const [value, setValue] = useState("");
     useEffect(() => {
-        console.log(fields);
         form.setFieldsValue(fields)
     }, [fields])
 
@@ -62,11 +61,9 @@ const FormInput = (props) => {
     function handleUpload(file, post) {
 
         const uploadTask = storage.ref(`/images/${file.name}`).put(file);
-
         uploadTask.on('state_changed',
             (snapshot) => {
-                // Observe state change events such as progress, pause, and resume
-                // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+
                 var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                 console.log('Upload is ' + progress + '% done');
                 switch (snapshot.state) {
@@ -83,9 +80,6 @@ const FormInput = (props) => {
             },
             () => {
                 uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                    console.log('File available at', downloadURL);
-
-
                     switch (action) {
                         case "ADD":
                             uploadPost(downloadURL, post);
@@ -93,7 +87,6 @@ const FormInput = (props) => {
                         case "EDIT":
                             editPost(downloadURL, post)
                             break;
-
                         default:
                             break;
                     }
@@ -107,14 +100,13 @@ const FormInput = (props) => {
     // -------------------------ADD POST------------
     function uploadPost(url, post) {
         const time = Timestamp.now();
-        console.log(time.toMillis());
         const user = firebaseAuth.currentUser;
 
 
         db.collection("todos").doc().set({
             userid: user.uid,
             title: post.title,
-            website: post.website,
+            website: post.website || null,
             category: post.category,
             content: post.content,
             like: [],
@@ -134,9 +126,8 @@ const FormInput = (props) => {
     function editPost(url, post) {
         db.collection("todos").doc(fields.id).update({
             title: post.title,
-            website: post.website,
+            website: post.website || null,
             category: post.category,
-            content: post.content,
             url: url,
         })
             .then(() => {
@@ -151,34 +142,37 @@ const FormInput = (props) => {
             });
 
     }
+
     const onFinish = (values) => {
         if (!currentUser) {
             alert("you have to login!")
-
+            return;
         }
-        console.log(values);
-        setPost(values);
-        const newpost = values;
-        console.log(newpost);
-        handleUpload(fileTest, newpost);
-
-
+        const hide = message.loading('UPLOAD...', 0);
+        setTimeout(hide, 10000);
+        const newValues = {
+            ...values,
+            content: value,
+        }
+        setPost(newValues);
+        handleUpload(fileTest, newValues);
     };
 
 
-
-    function handleChange(e) {
+    function handleChangeFile(e) {
         console.log(e)
         setFileTest(e)
     }
 
-
+    function handleChange(value) {
+        setValue(value);
+    }
 
     return (
         <div className={styles.forminput}>
             <h1>Add new article</h1>
             <Form {...layout} form={form} name="global_state" onFinish={onFinish}
-                validateMessages={validateMessages}>
+                  validateMessages={validateMessages}>
                 <Form.Item
                     name={'title'}
                     label="Title"
@@ -213,26 +207,28 @@ const FormInput = (props) => {
                     valuePropName="fileList"
                     getValueFromEvent={normFile}
 
-                    rules={[{ required: true, message: 'upload 1 image' }]}
+                    rules={[{required: true, message: 'upload 1 image'}]}
                 >
-                    <Upload name="logo" action={handleChange} listType="picture">
-                        <Button icon={<UploadOutlined />}>Click to upload</Button>
+                    <Upload name="logo" action={handleChangeFile} listType="picture">
+                        <Button icon={<UploadOutlined/>}>Click to upload</Button>
                     </Upload>
 
 
                 </Form.Item>
                 <Form.Item name={'content'} label="Introduction">
-                    <Input.TextArea style={{ height: '100px' }} />
+                    {/*<Input.TextArea style={{ height: '100px' }} />*/}
+                    <SimpleMDE onChange={handleChange} value={fields ? fields.content : value}/>;
                 </Form.Item>
-                <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
+                <Form.Item wrapperCol={{...layout.wrapperCol, offset: 8}}>
                     {
-                        fields?.id ? (<Button type="primary" htmlType="submit" name="action" onClick={() => setAction('EDIT')}>
-                            Edit
-                        </Button>) : (<Button type="primary" htmlType="submit" name="action" onClick={() => setAction('ADD')}>
-                            Add
-                        </Button>)
+                        fields?.id ? (
+                            <Button type="primary" htmlType="submit" name="action" onClick={() => setAction('EDIT')}>
+                                Edit
+                            </Button>) : (
+                            <Button type="primary" htmlType="submit" name="action" onClick={() => setAction('ADD')}>
+                                Add
+                            </Button>)
                     }
-
                 </Form.Item>
             </Form>
 

@@ -13,13 +13,11 @@ const { Meta } = Card;
 
 
 
-
-
 function PostOfUser(props) {
-    const { datas, user } = props;
+    const {data, user} = props;
     const router = useRouter();
     const currentuser = firebaseAuth.currentUser;
-    if (!datas) return <Loading />
+    if (!data) return <Loading/>
 
     function handleClick(action, data) {
         if (!currentuser) {
@@ -27,20 +25,19 @@ function PostOfUser(props) {
         }
         handleAction(action, currentuser, data);
     }
-    console.log(datas)
-    return datas.map((data, index) =>
-    (
-        <div className={styles.card_post} key={index}>
-            <Card className={styles.card_post_user}
-                style={{ width: '100%', marginTop: 16 }}
-                actions={[
-                    <div onClick={() => handleClick("LIKE", data)}>
 
-                        {currentuser && data?.like?.indexOf(currentuser.uid) > -1 ?
-                            <HeartFilled style={{ color: "hotpink" }} />
-                            : <HeartTwoTone twoToneColor="#eb2f96" />
+    return data.map((data, index) =>
+        (
+            <div className={styles.card_post} key={index}>
+                <Card className={styles.card_post_user}
+                      style={{width: '100%', marginTop: 16}}
+                      actions={[
+                          <div onClick={() => handleClick("LIKE", data)}>
+
+                              {currentuser && data?.like?.indexOf(currentuser.uid) > -1 ?
+                                  <HeartFilled style={{color: "hotpink"}}/>
+                                  : <HeartTwoTone twoToneColor="#eb2f96"/>
                         }
-
                         <span style={{ fontSize: '12px', marginLeft: '2px' }}>{data?.like?.length}</span>
                     </div>,
 
@@ -52,7 +49,6 @@ function PostOfUser(props) {
                         }
                         <span style={{ fontSize: '12px', marginLeft: '2px' }}>{data?.dislike?.length}</span>
                     </div>,
-
                     <CommentOutlined key="comment" />
 
                 ]}
@@ -65,11 +61,11 @@ function PostOfUser(props) {
                         }
                         title={
                             <div className={styles.card_title}>
-                                <span
-                                    onClick={() => router.push({
-                                        pathname: '/Article',
-                                        query: { id: data.id },
-                                    })}
+                                <span className={styles.card_title_name}
+                                      onClick={() => router.push({
+                                          pathname: '/Article',
+                                          query: {id: data.id},
+                                      })}
                                 >{data.title}</span>
                                 <Tooltip title={moment(data.startedAt.toDate()).format('YYYY-MM-DD HH:mm:ss')}>
                                     <span className={styles.card_title_time}>{dateToYMD(data.startedAt.toDate())}</span>

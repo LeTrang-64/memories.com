@@ -15,7 +15,9 @@
   padding: 0px 20px;
 }
 .add_icon {
-  position: fixed;
-  top: 500px;
-  left: 70px;
+    position: fixed;
+    top: 80vh;
+    right: 10vw;
+    cursor: pointer;
 }
+

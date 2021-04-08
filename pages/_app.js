@@ -3,7 +3,7 @@ import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
 import 'react-chat-elements/dist/main.css';
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;400&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
 </style>
 
 

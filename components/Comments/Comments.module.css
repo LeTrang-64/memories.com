@@ -9,14 +9,14 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #f0f3f6;
 }
 .comment-action {
     padding-left: 8px;
     cursor: pointer;
 }
 .comments_box{
-    border: 1px solid #F0F3F6;
+    border: 1px solid #D2D9DE;
+    border-radius: 10px;
     height: 500px;
     max-height: 400px;
     overflow: auto;
@@ -36,9 +36,10 @@
     margin-top:10px ;
 }
 /*---------------message_box------*/
-.message_box{
+.message_box {
     padding: 16px;
-    border:1.5px solid #F0F3F6;
+    border: 1.5px solid #D2D9DE;
+    border-radius: 10px;
 
 }
 

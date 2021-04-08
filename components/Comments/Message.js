@@ -19,7 +19,6 @@ function Message(props) {
 
     };
     const docRef = db.collection("todos").doc(idArticle);
-
     function sendComment(value,user){
         const time = Timestamp.now();
 
@@ -31,15 +30,11 @@ function Message(props) {
             dislike:[],
         }).then(() => {
             console.log("User successfully cmt!")
-
-
         })
             .catch((error) => {
                 console.error("Error writing cmt: ", error);
             });
         form.resetFields();
-
-
     }
 
 
@@ -58,9 +53,7 @@ function Message(props) {
                     <div><Avatar size={48} icon={<UserOutlined/>}/>
                     <p>Đăng nhập</p>
                     </div>
-
                 }
-
             </div>
             <Form form={form}
                 {...layout}
@@ -68,14 +61,10 @@ function Message(props) {
                 initialValues={{ remember: true }}
                 onFinish={onFinish}
             >
-                <Form.Item
-
-                    name="comment"
-                >
-                    <Input.TextArea placeholder=""  autoSize={{ minRows: 4, maxRows: 6 }} style={{ width: 640.5, maxWidth: 640.5, }} />
+                <Form.Item name="comment">
+                    <Input.TextArea placeholder="" autoSize={{minRows: 4, maxRows: 6}}
+                                    style={{width: 640.5, maxWidth: 640.5,}}/>
                 </Form.Item>
-
-
                 <Form.Item {...tailLayout}>
                     <Button htmlType="submit" type="primary" shape="round" size={200}>
                         Send comment

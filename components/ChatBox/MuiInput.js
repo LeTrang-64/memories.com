@@ -40,6 +40,24 @@ function MuiInput(props) {
                 console.error("Error send document: ", error);
             });
 
+        // -----update time--------
+        chatRef.update({
+            startedAt: time,
+        }).then(() => {
+            console.log("Document successfully updated!");
+        })
+            .catch((error) => {
+                // The document probably doesn't exist.
+                console.error("Error updating document: ", error);
+            });
+
+    }
+
+    function handleKeyDown(e) {
+        if (e.keyCode === 13) {
+            handleclick();
+        }
+
     }
 
     return (
@@ -48,13 +66,14 @@ function MuiInput(props) {
                 placeholder="Type here..."
                 multiline={true}
                 ref={inputRef}
+                onKeyDown={handleKeyDown}
+                autoHeight={false}
                 rightButtons={
                     <Button
                         color='white'
                         backgroundColor='black'
-                        text='Send' onClick={handleclick} />
-                } />
-
+                        text='Send' onClick={handleclick}/>
+                }/>
         </div>
     );
 }

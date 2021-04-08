@@ -21,7 +21,6 @@ function Comments(props) {
         const sub=docRef.collection("comments").orderBy("timeSend","desc").onSnapshot(snapshot => {
             if(snapshot){
                 setCmts(snapshot.docs.map((snap)=>({...snap.data(),idCmt:snap.id})));
-                console.log(snapshot.docs.map((snap)=>({...snap.data(),idCmt:snap.id})))
             }
         })
 
@@ -54,9 +53,6 @@ function Comments(props) {
                     </div>
                 }
             </div>
-
-
-
         </div>
     );
 }

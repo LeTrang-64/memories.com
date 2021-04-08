@@ -10,15 +10,11 @@ import {firebaseAuth} from "../../config/firebaseConfig";
 
 function Cmt(props) {
     const {comment,idArticle}=props;
-
     const time=comment?.timeSend?.toDate()||null;
-
-
-// const date=new Date(time.toMillis()*1000);
-
     const idUser=comment.idUser;
     const [userCmt,setUserCmt]=useState()
     const currentuser=firebaseAuth.currentUser;
+
     useEffect(async ()=>{
         const sub= await getUser(idUser,setUserCmt);
 
@@ -37,8 +33,6 @@ function Cmt(props) {
                     :<LikeOutlined />
                 }
                 <span style={{ fontSize: '12px', marginLeft: '2px' }}>{comment?.like?.length}</span>
-
-
             </span>
         </Tooltip>,
         <Tooltip key="comment-basic-dislike" title="Dislike">

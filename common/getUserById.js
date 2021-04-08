@@ -10,14 +10,7 @@ export default async (id,callback)=> {
             }
 
         })
-        const snapRates = await userRef.collection('rates').onSnapshot(snap => {
 
-                if (snap) {
-                    setRates(snap.docs.map(snap => ({ ...snap.data(), id: snap.id })))
-                }
-
-            }
-        )
     } catch (e) {
         console.log(e);
     }

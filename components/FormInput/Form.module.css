@@ -1,7 +1,9 @@
 .forminput {
     width: 50%;
-    height: 600px;
-    min-width: 350px;
+    position: absolute;
+    top: 20px;
+
+    min-height: 700px;
     background-color: white;
     padding: 30px 10px;
     border-radius: 20px;

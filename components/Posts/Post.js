@@ -54,7 +54,6 @@ function Post(props) {
                     }
                     <span style={{ fontSize: '12px', marginLeft: '2px' }}>{post?.dislike?.length}</span>
                 </div>,
-
                 <CommentOutlined key="comment" />
 
             ]}

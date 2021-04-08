@@ -13,6 +13,7 @@
     flex-flow: column;
     align-items: center;
 }
+
 .article_author_wrap h6 {
     color: #7b93a5;
     font-size: 0.875rem;
@@ -22,11 +23,22 @@
 
 .article_subtitle {
 }
+
+.article_content_wrap {
+    padding-top: 20px;
+}
+
+.article_title {
+    font-size: 32px;
+    font-weight: lighter;
+}
+
 .article_content {
     margin: 16px 0px;
+    color: #001A39;
     text-align: justify;
-    color: #888;
 }
+
 .article_action {
     height: 60px;
     font-size: 20px;
